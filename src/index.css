@@ -33,7 +33,7 @@ body
    }
    .button-container
    {
-      justify-content: space-around;
+      justify-content: space-evenly;
       font-size: 13px;
    }
 }
