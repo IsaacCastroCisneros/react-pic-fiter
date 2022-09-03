@@ -23,6 +23,20 @@ body
    filter: contrast(80%) !important;
 }
 
+@media all and (max-width:968px) 
+{
+
+   .slider-mob
+   {
+      display: block;
+      width: 10rem;
+   }
+   .button-container
+   {
+      justify-content: space-around;
+      font-size: 13px;
+   }
+}
 #root
 {
    height: 100vh;

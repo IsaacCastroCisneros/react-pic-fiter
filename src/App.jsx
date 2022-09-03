@@ -85,13 +85,14 @@ function App()
 
   function findOption({target})
   {
-    const dummyOptions= filterOptions.map((opt,pos)=>
+    setFilterOptions(prev=>
       {
-        if(pos!==selectedIndex)return opt
-        return {...opt,value:target.value}
+        return prev.map((opt,pos)=>
+        {
+          if(pos!==selectedIndex)return opt
+          return {...opt,value:target.value}
+        })
       })
-
-    setFilterOptions(dummyOptions)
   }
 
   function addStyles()
@@ -109,24 +110,40 @@ function App()
       <header className="block p-[.6rem] uppercase text-center bg-gradient-to-b from-cyan-500 to-indigo-700 font-bold letter tracking-[.3rem] text-[1.2rem]">
         absolute pic filter
       </header>
-      <section className='flex justify-center w-[fit-content] mt-6 mx-auto rounded-[.5rem] p-[1.5rem] bg-gradient-to-b from-cyan-500 to-indigo-700 gap-[1rem]'>
-        {
-          filterOptions.map((opt,pos)=>
-            {
-               return(
-                  <Button 
-                  key={pos}
-                  isActive={selectedIndex===pos}
-                  name={opt.name} 
-                  setSelectedIndex={()=>setSelectedIndex(pos)} 
-                  />
-               )
-            })
-        }
-      </section>
-      <Img addStyles={addStyles}>
-        <Slider findOption={findOption} optionSelected={optionSelected}/>
-      </Img>    
+      <main className='px-[2rem] flex flex-col items-center gap-[1.5rem] mt-8'>
+        <section className="flex button-container flex-wrap justify-center w-[fit-content] rounded-[.5rem] p-[1.5rem] bg-gradient-to-b from-cyan-500 to-indigo-700 gap-[1rem]">
+          {filterOptions.map((opt, pos) => {
+            return (
+              <Button
+                key={pos}
+                isActive={selectedIndex === pos}
+                name={opt.name}
+                setSelectedIndex={() => setSelectedIndex(pos)}
+              />
+            );
+          })}
+        </section>
+        <Slider 
+         findOption={findOption} 
+         optionSelected={optionSelected}
+         styles={
+          ['hidden','slider-mob']
+         }
+         />
+        <Img addStyles={addStyles}>
+          <Slider findOption={findOption} 
+          optionSelected={optionSelected} 
+          styles={
+            [
+              'rotate-[-90deg]',
+              'absolute',
+              'top-[18rem]',
+              'right-[-13rem]'
+            ]
+          }
+          />
+        </Img>
+      </main>
     </>
   );
 }
@@ -140,7 +157,7 @@ function Button(props)
   }=props
   
   return(
-    <button className={`bg-gradient-to-b from-pink-300 font-bold tracking-[.1rem] hover:brightness-105 transition-all duration-500 to-pink-600 block py-[.8rem] px-[1.1rem] rounded-[.5rem] ${isActive ? 'active':''}`} 
+    <button className={`bg-gradient-to-b from-pink-300 font-bold tracking-[.1em] hover:brightness-105 transition-all duration-500 to-pink-600 block py-[.8em] px-[1.1em] rounded-[.5em] ${isActive ? 'active':''}`} 
     onClick={setSelectedIndex}
     >
      {name}
@@ -156,14 +173,12 @@ function Img(props)
   }=props
 
   return (
-    <div className='flex mx-[auto] items-center w-[fit-content] justify-center relative h-[fit-content]'>
-    <div className="block overflow-hidden rounded-[.5rem] w-[50rem] h-[70rem] mt-[2rem]">
+    <div className="block rounded-[.5rem] w-[50rem] max-w-[100%] relative">
       <img className="rounded-[.5rem]" src="https://safebooru.org//images/3154/dd0ff6a23b6b24af50a748d5ac84aaf7296df98b.jpg" alt="" 
        style={{filter:addStyles()}}
       />
+     {children}
     </div>
-    {children}
-  </div>
   );
 }
 
@@ -171,18 +186,22 @@ function Slider(props)
 {
   const{
     optionSelected,
-    findOption
+    findOption,
+    styles
   }=props
 
+  const allStyles = styles ? styles.map(style=>style) : [] 
+
   return (
-  <input className='rotate-[-90deg] scale-[150%] w-[20rem] absolute right-[-14rem] top-[18rem]' 
+  <input className={`${allStyles.join(' ')} scale-[150%] w-[20rem]`} /* {`${rotate||''} ${position||'relative'}  z-50 ${top||''} ${rite||''}`}   */
   type="range"
   value={optionSelected.value}
   min={optionSelected.range.min}
   max={optionSelected.range.max} 
 
   onChange={findOption}
-  />);
+  />
+  );
 }
 
 export default App
